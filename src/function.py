@@ -429,7 +429,7 @@ class Function:
             self._tree_op_wrapper(self.right, tokens)
 
     def _tree_op_wrapper(self, child, tokens: list) -> None:
-        wrap_child_in_parenthesis = child.value in OPERATORS and \
+        wrap_child_operator = child.value in OPERATORS and \
             (OPERATORS[self.value].priority > OPERATORS[child.value].priority or
              (OPERATORS[self.value].priority == OPERATORS[child.value].priority and
               ((child == self.right and
@@ -437,7 +437,7 @@ class Function:
                (child == self.left and
                 OPERATORS[self.value].associativity == Associativity.RIGHT_ASSOCIATIVE))))
 
-        if OPERATORS[self.value].operator_type != OperatorType.BINARY or wrap_child_in_parenthesis:
+        if OPERATORS[self.value].operator_type != OperatorType.BINARY or wrap_child_operator:
             tokens.append('(')
             child.tokenize_tree(tokens)
             tokens.append(')')
