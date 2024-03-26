@@ -1,6 +1,6 @@
 """Module that provides functionality for parsing mathematical expressions"""
 import re
-from operators import OPERATORS, CONSTANTS, OperatorType, Associativity
+from .operators import OPERATORS, CONSTANTS, OperatorType, Associativity
 
 
 NUM_REGEX = re.compile(r"[\d,.]+")
