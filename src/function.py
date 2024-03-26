@@ -1,10 +1,18 @@
-import sys
+"""Module that provides functionality for working with mathematical functions"""
+from sympy import sympify, simplify, nsimplify
 from operators import OPERATORS, CONSTANTS, OperatorType, Associativity
 from expr_parser import Parser, NUM_REGEX
-from sympy import sympify, simplify, nsimplify
 
 
 class Function:
+    """
+    Class that represents a mathematical function
+
+    Args:
+        expression (str, optional): The mathematical expression that represents a function.\
+            Defaults to None
+    """
+
     def __init__(self, expression: str = None) -> None:
         self.left = None
         self.right = None
@@ -15,6 +23,12 @@ class Function:
             self.build_tree(rpn)
 
     def build_tree(self, rpn: list) -> None:
+        """
+        Method that builds AVL-tree of an expression based on its RPN form
+
+        Args:
+            rpn (list): RPN of an expression represented as a list of tokens
+        """
         if not rpn:
             return
 
@@ -35,6 +49,16 @@ class Function:
         self.left.build_tree(rpn)
 
     def validate_function(self, **values) -> bool:
+        """
+        Method checks if function has an illegal operation (e.g. division by zero)
+
+        Args:
+            **values: Positional arguments for function variables. \
+                Can be specified to check if function is valide at certain point
+
+        Returns:
+            bool: Function validity
+        """
         try:
             self.calculate(**values)
         except (ZeroDivisionError, ValueError):
@@ -42,6 +66,12 @@ class Function:
         return True
 
     def simplify(self):
+        """
+        Method that simplifies and returns new function
+
+        Returns:
+            Function: Simplified function
+        """
         if not self.validate_function():
             return self
         expr = str(self).replace('tg', 'tan').replace('e', 'E')
@@ -51,6 +81,20 @@ class Function:
         return Function(simplified)
 
     def calculate(self, **values: dict):
+        """
+        Method that evaluates a function with given variables
+
+        Args:
+            **values: Positional arguments for function variables.\
+                Not necessary to include all or any of them
+
+        Raises:
+            ZeroDivisionError: Raises when division by zero occurs
+            ValueError: Raises when a function receives an argument that is out of its domain
+
+        Returns:
+            Function: Reduced function with the calculations performed
+        """
         result = Function()
         if self.value in values:
             result.value = values[self.value]
@@ -77,8 +121,6 @@ class Function:
                     result.left.value, result.right.value)
                 if isinstance(value, complex):
                     raise ValueError("Argument is out of function domain")
-                if abs(value) <= 2 * sys.float_info.epsilon:
-                    value = 0.0
                 result.value = value
                 result.left = result.right = None
         elif isinstance(result.left.value, (int, float)):
@@ -88,13 +130,26 @@ class Function:
                 raise ValueError("Argument is out of function domain")
 
             value = OPERATORS[result.value].calculate(result.left.value)
-            if abs(value) <= 2 * sys.float_info.epsilon:
-                value = 0.0
             result.value = value
             result.left = None
         return result
 
     def derive(self, variable: str = 'x', **values: dict) -> float:
+        """
+        Method that takes derivative of a function\
+            with respect to a given variable and at a given point
+
+        Args:
+            variable (str, optional): The variable of differentiation. Defaults to 'x'
+            **values: Positional arguments for function variables.
+
+        Raises:
+            ValueError: Raises when either a given point is specified incorrectly\
+                or when a derivative does not exists at that point
+
+        Returns:
+            float: Derivative of a function at a given point
+        """
         derivative = self.diff(variable)
         if self.validate_function(**values) and derivative.validate_function(**values):
             value = derivative.calculate(**values).value
@@ -104,6 +159,15 @@ class Function:
         raise ValueError("Derivative at that point does not exist")
 
     def diff(self, variable: str = 'x'):
+        """
+        Method that differentiates a function
+
+        Args:
+            variable (str, optional): The variable of differentiation. Defaults to 'x'
+
+        Returns:
+            Function: Derivative of a function
+        """
         if self.value is None:
             return Function()
 
@@ -341,6 +405,12 @@ class Function:
         return expr
 
     def tokenize_tree(self, tokens: list) -> None:
+        """
+        Method that tokenize an AVL-tree of a function and stores them in a given list
+
+        Args:
+            tokens (list): List for storing tokens of a function
+        """
         if self.value not in OPERATORS:
             tokens.append(self.value)
             return
