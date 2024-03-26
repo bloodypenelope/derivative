@@ -1,5 +1,5 @@
 """Module that performs some methods defined in a function module"""
-from .function import Function
+from function import Function
 
 
 def diff(function: Function, variable: str = 'x', **values: dict) -> Function | float:

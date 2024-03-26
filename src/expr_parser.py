@@ -1,7 +1,6 @@
 """Module that provides functionality for parsing mathematical expressions"""
 import re
-from .operators import OPERATORS, CONSTANTS, OperatorType, Associativity
-
+from operators import OPERATORS, CONSTANTS, OperatorType, Associativity
 
 NUM_REGEX = re.compile(r"[\d,.]+")
 VAR_REGEX = re.compile(r"[A-Za-z]+")
@@ -166,7 +165,9 @@ class Parser:
                 while stack and peek != '(':
                     result.append(stack.pop())
                     peek = self._peek(stack)
-                peek = stack.pop() if stack else None
+                if stack:
+                    peek = self._peek(stack)
+                    stack.pop()
                 self._parenthesis_mismatch_error_checker(peek, position,
                                                          None, False)
                 open_bracket_pos.pop()
@@ -179,9 +180,10 @@ class Parser:
             prev_token = token
             position += len(token) if token != 'unary-' else 1
 
-        position -= len(prev_token)
-        self._entity_placement_error_checker(prev_token, position,
-                                             len(prev_token), True)
+        if position:
+            position -= len(prev_token)
+            self._entity_placement_error_checker(prev_token, position,
+                                                 len(prev_token), True)
 
         while stack:
             entity = stack.pop()
@@ -264,3 +266,7 @@ class Parser:
             except ValueError as exc:
                 raise InvalidNumberError(self.expression,
                                          position, len(token)) from exc
+
+
+a = Parser("xyz")
+print(a.rpn)
