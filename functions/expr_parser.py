@@ -1,6 +1,6 @@
 """Module that provides functionality for parsing mathematical expressions"""
 import re
-from operators import OPERATORS, CONSTANTS, OperatorType, Associativity
+from .operators import OPERATORS, CONSTANTS, OperatorType, Associativity
 
 NUM_REGEX = re.compile(r"[\d,.]+")
 VAR_REGEX = re.compile(r"[A-Za-z]+")
@@ -266,7 +266,3 @@ class Parser:
             except ValueError as exc:
                 raise InvalidNumberError(self.expression,
                                          position, len(token)) from exc
-
-
-a = Parser("xyz")
-print(a.rpn)

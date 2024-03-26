@@ -1,7 +1,7 @@
 """Module that provides functionality for working with mathematical functions"""
 from sympy import sympify, simplify, nsimplify
-from operators import OPERATORS, CONSTANTS, OperatorType, Associativity
-from expr_parser import Parser, NUM_REGEX
+from .operators import OPERATORS, CONSTANTS, OperatorType, Associativity
+from .expr_parser import Parser, NUM_REGEX
 
 
 class Function:
