@@ -18,7 +18,9 @@ class Function:
         self.right = None
         self.value = None
 
-        if expression:
+        if expression in ("undefined", "nan"):
+            self.build_tree([])
+        elif expression:
             rpn = Parser(expression).rpn
             self.build_tree(rpn)
 
@@ -397,8 +399,6 @@ class Function:
         return derivative
 
     def __str__(self) -> str:
-        if self.value is None:
-            return ""
         if not self.validate_function():
             return "undefined"
         tokens = []
