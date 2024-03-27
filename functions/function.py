@@ -59,6 +59,8 @@ class Function:
         Returns:
             bool: Function validity
         """
+        if self.value is None:
+            return False
         try:
             self.calculate(**values)
         except (ZeroDivisionError, ValueError):

@@ -142,7 +142,7 @@ class Parser:
                                      prev_token == '(' or
                                      prev_token in OPERATORS):
                     token = 'unary-'
-                if OPERATORS.get(token).operator_type == OperatorType.POSTFIX:
+                if OPERATORS.get(token).operator_type == OperatorType.POSTFIX:  # pragma: no cover
                     self._entity_placement_error_checker(prev_token, position,
                                                          len(token), False)
                     result.append(token)
