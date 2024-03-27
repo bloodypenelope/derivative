@@ -403,17 +403,11 @@ class Function:
         if not self.validate_function():
             return "undefined"
         tokens = []
-        self.tokenize_tree(tokens)
+        self._tokenize_tree(tokens)
         expr = "".join(map(str, tokens))
         return expr
 
-    def tokenize_tree(self, tokens: list) -> None:
-        """
-        Method that tokenize an AVL-tree of a function and stores them in a given list
-
-        Args:
-            tokens (list): List for storing tokens of a function
-        """
+    def _tokenize_tree(self, tokens: list) -> None:
         if self.value not in OPERATORS:
             tokens.append(self.value)
             return
@@ -432,6 +426,7 @@ class Function:
             self._tree_op_wrapper(self.right, tokens)
 
     def _tree_op_wrapper(self, child, tokens: list) -> None:
+        # pylint: disable=protected-access
         wrap_child_operator = child.value in OPERATORS and \
             (OPERATORS[self.value].priority > OPERATORS[child.value].priority or
              (OPERATORS[self.value].priority == OPERATORS[child.value].priority and
@@ -442,7 +437,7 @@ class Function:
 
         if OPERATORS[self.value].operator_type != OperatorType.BINARY or wrap_child_operator:
             tokens.append('(')
-            child.tokenize_tree(tokens)
+            child._tokenize_tree(tokens)
             tokens.append(')')
         else:
-            child.tokenize_tree(tokens)
+            child._tokenize_tree(tokens)
