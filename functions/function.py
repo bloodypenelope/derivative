@@ -1,10 +1,7 @@
 """Module that provides functionality for working with mathematical functions"""
-import sys
 from sympy import sympify, simplify, nsimplify
 from .operators import OPERATORS, CONSTANTS, OperatorType, Associativity
 from .expr_parser import Parser, NUM_REGEX
-
-sys.tracebacklimit = 0
 
 
 class Function:

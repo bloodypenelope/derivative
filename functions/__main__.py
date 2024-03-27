@@ -1,6 +1,9 @@
 """Module that performs some methods defined in a function module"""
+import sys
 import argparse
 from .function import Function
+
+sys.tracebacklimit = 0
 
 
 def diff(function: Function, variable: str = 'x', **values: dict) -> Function | float:
