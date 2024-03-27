@@ -1,7 +1,9 @@
 """Module that provides functionality for parsing mathematical expressions"""
 import re
+import sys
 from .operators import OPERATORS, CONSTANTS, OperatorType, Associativity
 
+sys.tracebacklimit = 0
 NUM_REGEX = re.compile(r"[\d,.]+")
 VAR_REGEX = re.compile(r"[A-Za-z]+")
 
