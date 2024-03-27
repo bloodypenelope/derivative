@@ -1,4 +1,5 @@
 """Module that performs some methods defined in a function module"""
+import argparse
 from .function import Function
 
 
@@ -24,6 +25,12 @@ def main() -> None:
     """
     Prints derivative of a specific function
     """
+    parser = argparse.ArgumentParser(
+        prog="derivative",
+        description="Python package with tools for working with mathematical functions,\
+            the main one of which is taking derivative")
+    _ = parser.parse_args()
+
     function = Function("cbrt(x^2)")
     print(diff(function, x=0.0000000000000000000000000000001))
 
