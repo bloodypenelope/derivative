@@ -19,18 +19,19 @@ class Function:
         self.value = None
 
         if expression in ("undefined", "nan"):
-            self.build_tree([])
+            self._build_tree([])
         elif expression:
             rpn = Parser(expression).rpn
-            self.build_tree(rpn)
+            self._build_tree(rpn)
 
-    def build_tree(self, rpn: list) -> None:
+    def _build_tree(self, rpn: list) -> None:
         """
         Method that builds AVL-tree of an expression based on its RPN form
 
         Args:
             rpn (list): RPN of an expression represented as a list of tokens
         """
+        # pylint: disable=protected-access
         if not rpn:
             return
 
@@ -45,10 +46,10 @@ class Function:
 
         if OPERATORS[token].operator_type == OperatorType.BINARY:
             self.right = Function()
-            self.right.build_tree(rpn)
+            self.right._build_tree(rpn)
 
         self.left = Function()
-        self.left.build_tree(rpn)
+        self.left._build_tree(rpn)
 
     def validate_function(self, **values) -> bool:
         """

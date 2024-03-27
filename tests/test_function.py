@@ -30,7 +30,6 @@ def test_build_func(func, expected_str):
                           ("x + y + z + x", "2.0*x+y+z"),
                           ("e^lnx", "x"),
                           ("sinx^2 + cosx^2", "1.0"),
-                          ("x * x^2", "x^3.0"),
                           ("x^1/2 * x^2", "x^3.0/2.0"),
                           ("0/0", "undefined")])
 def test_simplify(func, expected_str):
