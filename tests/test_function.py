@@ -4,19 +4,13 @@ from functions import function
 
 
 @pytest.mark.parametrize("func, expected_str",
-                         [(None, ""),
-                          ("", "")])
-def test_empty(func, expected_str):
-    """Test for empty functions"""
+                         [(None, "undefined"),
+                          ("", "undefined"),
+                          ("undefined", "undefined"),
+                          ("nan", "undefined")])
+def test_empty_and_undefined(func, expected_str):
+    """Test for empty and undefined functions"""
     assert str(function.Function(func)) == expected_str
-
-
-@pytest.mark.parametrize("rpn, expected_str", [([], "")])
-def test_build_empty_tree(rpn, expected_str):
-    """Test for building functions from empty rpn tokens list"""
-    func = function.Function()
-    func.build_tree(rpn)
-    assert str(func) == expected_str
 
 
 @pytest.mark.parametrize("func, expected_str",
@@ -74,7 +68,7 @@ def test_derive(func, variable, point, expected_str):
                           ("sqrt(x^2)", 'x', "x/sqrt(x^2.0)"),
                           ("cbrt(x^3)", 'x', "x^2.0/(x^6.0)^(1.0/3.0)"),
                           ("exp(cos(x))", 'x', "-(exp(cos(x)))*sin(x)"),
-                          ("", 'x', "")])
+                          ("", 'x', "undefined")])
 def test_diff(func, variable, expected_str):
     """Test for differentiating functions"""
     assert str(function.Function(func).diff(variable)) == expected_str
