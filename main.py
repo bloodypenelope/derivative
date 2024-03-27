@@ -1,7 +1,7 @@
-"""Module that performs some methods defined in a function module"""
+"""Script for taking derivative of a function"""
 import sys
 import argparse
-from .function import Function
+from functions.function import Function
 
 sys.tracebacklimit = 0
 
@@ -30,12 +30,11 @@ def main() -> None:
     """
     parser = argparse.ArgumentParser(
         prog="derivative",
-        description="Python package with tools for working with mathematical functions,\
-            the main one of which is taking derivative")
+        description="Script for taking derivative of a function")
     _ = parser.parse_args()
 
     function = Function("cbrt(x^2)")
-    print(diff(function, x=0.00000000000000000000000001))
+    print(diff(function, x=0.0000000000000000000000000000001))
 
 
 if __name__ == '__main__':
