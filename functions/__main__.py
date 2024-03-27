@@ -32,7 +32,7 @@ def main() -> None:
     _ = parser.parse_args()
 
     function = Function("cbrt(x^2)")
-    print(diff(function, x=0.0000000000000000000000000000001))
+    print(diff(function, x=0.00000000000000000000000001))
 
 
 if __name__ == '__main__':
