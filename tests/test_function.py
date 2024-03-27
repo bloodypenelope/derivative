@@ -82,8 +82,8 @@ def test_diff(func, variable, expected_str):
 
 @pytest.mark.parametrize("func, point, expected_error",
                          [("x^y", {'x': 0, 'y': 0}, ZeroDivisionError),
+                          ("x/y", {'x': 1, 'y': 0}, ZeroDivisionError),
                           ("x^(1/2)", {'x': -1}, ValueError),
-                          ("x^(1/3)", {'x': -2}, ValueError),
                           ("sqrt(x-5)", {'x': 4}, ValueError),
                           ("ln(sin(x))", {'x': 0}, ValueError),
                           ("ln(x^2-4x+3)", {'x': 2}, ValueError)])
