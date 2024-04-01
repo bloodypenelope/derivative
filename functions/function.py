@@ -208,7 +208,7 @@ class Function:
 
     def _diff_unary_min(self, variable: str):
         derivative = Function()
-        derivative.value = self.value
+        derivative.value = 'unary-'
         derivative.left = self.left.diff(variable)
         return derivative
 
