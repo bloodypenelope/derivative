@@ -27,8 +27,9 @@ def main() -> None:
     """
     parser = argparse.ArgumentParser(
         prog='derivative',
-        description='Module with functionallity for differentiation mathematical functions.\
-            (e.g. [derivative.diff("x^2") -> 2.0*x], [derivative.diff("x^2", x=2) -> 4.0])')
+        description='Module with functionallity for differentiation mathematical functions.\n\
+            (e.g. [derivative.diff("x^2") -> "2.0*x"], [derivative.diff("x^2", x=2) -> "4.0"])',
+        formatter_class=argparse.RawTextHelpFormatter)
     _ = parser.parse_args()
 
     print(diff(diff(diff("x^3"))))
