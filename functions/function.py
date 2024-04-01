@@ -178,9 +178,7 @@ class Function:
 
         derivative = None
         match self.value:
-            case '+':
-                derivative = self._diff_sum(variable)
-            case '-':
+            case '+' | '-':
                 derivative = self._diff_sum(variable)
             case 'unary-':
                 derivative = self._diff_unary_min(variable)
