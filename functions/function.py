@@ -25,12 +25,6 @@ class Function:
             self._build_tree(rpn)
 
     def _build_tree(self, rpn: list) -> None:
-        """
-        Method that builds AVL-tree of an expression based on its RPN form
-
-        Args:
-            rpn (list): RPN of an expression represented as a list of tokens
-        """
         # pylint: disable=protected-access
         if not rpn:
             return
