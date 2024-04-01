@@ -32,7 +32,7 @@ def main() -> None:
         formatter_class=argparse.RawTextHelpFormatter)
     _ = parser.parse_args()
 
-    print(diff(diff(diff("x^3"))))
+    print(diff("x^x^x"))
 
 
 if __name__ == '__main__':
