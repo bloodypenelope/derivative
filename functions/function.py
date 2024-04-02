@@ -1,4 +1,5 @@
-"""Module that provides functionality for working with mathematical functions"""
+"""Module that provides functionality for\
+    working with mathematical functions"""
 from sympy import sympify, simplify, nsimplify
 from .operators import OPERATORS, CONSTANTS, OperatorType, Associativity
 from .expr_parser import Parser, NUM_REGEX
@@ -9,8 +10,8 @@ class Function:
     Class that represents a mathematical function
 
     Args:
-        expression (str, optional): The mathematical expression that represents a function.\
-            Defaults to None
+        expression (str, optional): The mathematical expression\
+            that represents a function. Defaults to None
     """
 
     def __init__(self, expression: str = None) -> None:
@@ -47,11 +48,13 @@ class Function:
 
     def validate_function(self, **values) -> bool:
         """
-        Method checks if function has an illegal operation (e.g. division by zero)
+        Method checks if function has an illegal operation\
+            (e.g. division by zero)
 
         Args:
             **values: Positional arguments for function variables. \
-                Can be specified to check if function is valide at certain point
+                Can be specified to check if function\
+                    is valide at certain point
 
         Returns:
             bool: Function validity
@@ -89,7 +92,8 @@ class Function:
 
         Raises:
             ZeroDivisionError: Raises when division by zero occurs
-            ValueError: Raises when a function receives an argument that is out of its domain
+            ValueError: Raises when a function receives\
+                an argument that is out of its domain
 
         Returns:
             Function: Reduced function with the calculations performed
@@ -114,7 +118,8 @@ class Function:
 
             if isinstance(result.left.value, (int, float)) and \
                     isinstance(result.right.value, (int, float)):
-                if result.value == '^' and result.left.value == 0.0 and result.right.value <= 0:
+                if result.value == '^' and result.left.value == 0.0 \
+                        and result.right.value <= 0:
                     raise ZeroDivisionError
                 value = OPERATORS[result.value].calculate(
                     result.left.value, result.right.value)
@@ -139,18 +144,20 @@ class Function:
             with respect to a given variable and at a given point
 
         Args:
-            variable (str, optional): The variable of differentiation. Defaults to 'x'
+            variable (str, optional): The variable of differentiation.\
+                Defaults to 'x'
             **values: Positional arguments for function variables.
 
         Raises:
-            ValueError: Raises when either a given point is specified incorrectly\
-                or when a derivative does not exists at that point
+            ValueError: Raises when either a given point is specified\
+                incorrectly or when a derivative does not exists at that point
 
         Returns:
             float: Derivative of a function at a given point
         """
         derivative = self.diff(variable)
-        if self.validate_function(**values) and derivative.validate_function(**values):
+        if self.validate_function(**values) \
+                and derivative.validate_function(**values):
             value = derivative.calculate(**values).value
             if not isinstance(value, (int, float)):
                 raise ValueError("Point was not specified correctly")
@@ -162,7 +169,8 @@ class Function:
         Method that differentiates a function
 
         Args:
-            variable (str, optional): The variable of differentiation. Defaults to 'x'
+            variable (str, optional): The variable of differentiation.\
+                Defaults to 'x'
 
         Returns:
             Function: Derivative of a function
@@ -184,8 +192,6 @@ class Function:
                 derivative = self._diff_pow(variable)
             case 'sqrt':
                 derivative = self._diff_sqrt(variable)
-            case 'cbrt':
-                derivative = self._diff_cbrt(variable)
             case 'exp':
                 derivative = self._diff_exp(variable)
             case 'ln':
@@ -305,29 +311,6 @@ class Function:
         derivative.right.right.left = self.left
         return derivative
 
-    def _diff_cbrt(self, variable: str):
-        derivative = Function()
-        derivative.value = '/'
-
-        derivative.left = self.left.diff(variable)
-
-        derivative.right = Function()
-        derivative.right.value = '*'
-
-        derivative.right.left = Function()
-        derivative.right.left.value = 3.0
-
-        derivative.right.right = Function()
-        derivative.right.right.value = 'cbrt'
-
-        derivative.right.right.left = Function()
-        derivative.right.right.left.value = '^'
-        derivative.right.right.left.left = self.left
-
-        derivative.right.right.left.right = Function()
-        derivative.right.right.left.right.value = 2.0
-        return derivative
-
     def _diff_exp(self, variable: str):
         derivative = Function()
         derivative.value = '*'
@@ -420,14 +403,19 @@ class Function:
     def _tree_op_wrapper(self, child, tokens: list) -> None:
         # pylint: disable=protected-access
         wrap_child_operator = child.value in OPERATORS and \
-            (OPERATORS[self.value].priority > OPERATORS[child.value].priority or
-             (OPERATORS[self.value].priority == OPERATORS[child.value].priority and
+            (OPERATORS[self.value].priority
+                > OPERATORS[child.value].priority or
+             (OPERATORS[self.value].priority
+                 == OPERATORS[child.value].priority and
               ((child == self.right and
-                OPERATORS[self.value].associativity == Associativity.LEFT_ASSOCIATIVE) or
+                OPERATORS[self.value].associativity
+                == Associativity.LEFT_ASSOCIATIVE) or
                (child == self.left and
-                OPERATORS[self.value].associativity == Associativity.RIGHT_ASSOCIATIVE))))
+                OPERATORS[self.value].associativity
+                == Associativity.RIGHT_ASSOCIATIVE))))
 
-        if OPERATORS[self.value].operator_type != OperatorType.BINARY or wrap_child_operator:
+        if OPERATORS[self.value].operator_type != OperatorType.BINARY\
+                or wrap_child_operator:
             tokens.append('(')
             child._tokenize_tree(tokens)
             tokens.append(')')

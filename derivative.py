@@ -9,7 +9,8 @@ def diff(function: str, variable: str = 'x', **values: dict) -> str:
 
     Args:
         function (str): Mathematical function to derive
-        variable (str, optional): The variable of differentiation. Defaults to 'x'
+        variable (str, optional): The variable of differentiation.\
+            Defaults to 'x'
         **values: Positional arguments for function variables.\
             If specified calculates derivative at a given point
 
@@ -27,9 +28,10 @@ def main() -> None:
     """
     parser = argparse.ArgumentParser(
         prog='derivative',
-        description='Module with functionallity for differentiation mathematical functions.\n\
-            (e.g. [derivative.diff("x^2") -> "2.0*x"], [derivative.diff("x^2", x=2) -> "4.0"])',
-        formatter_class=argparse.RawTextHelpFormatter)
+        description='Module with functionallity for\
+            differentiation mathematical functions.\
+            (e.g. [derivative.diff("x^2") -> "2.0*x"],\
+                [derivative.diff("x^2", x=2) -> "4.0"])')
     _ = parser.parse_args()
 
     print(diff("1/lnx^2"))

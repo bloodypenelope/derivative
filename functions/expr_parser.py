@@ -13,17 +13,20 @@ class ParserException(Exception):
     Args:
         expression (str): Expression that is being parsed
         position (int): Position in the expression where the problem occurred
-        length (int): Length of the token in the expression which caused a problem
+        length (int): Length of the token in the expression\
+            which caused a problem
     """
 
-    def __init__(self, expression: str, position: int, length: int, *args: object) -> None:
+    def __init__(self, expression: str, position: int,
+                 length: int, *args: object) -> None:
         super().__init__(*args)
         self.expression = expression
         self.position = position
         self.length = length
 
     def __str__(self):
-        return f"\n{self.expression}\n{'^' * self.length: >{self.position + self.length}}"
+        return f"\n{self.expression}\n{'^' * self.length: \
+            >{self.position + self.length}}"
 
 
 class ParenthesisMismatchError(ParserException):
@@ -32,7 +35,8 @@ class ParenthesisMismatchError(ParserException):
 
     Args:
         expression (str): The expression that is being parsed
-        position (int): Position in the expression where the parenthesis mismatch error occured
+        position (int): Position in the expression\
+            where the parenthesis mismatch error occured
     """
 
     def __init__(self, expression: str, position: int, *args: object) -> None:
@@ -45,7 +49,8 @@ class InvalidCharacterError(ParserException):
 
     Args:
         expression (str): The expression that is being parsed
-        position (int): Position in the expression where the invalid character was found
+        position (int): Position in the expression\
+            where the invalid character was found
     """
 
     def __init__(self, expression: str, position: int, *args: object) -> None:
@@ -54,11 +59,13 @@ class InvalidCharacterError(ParserException):
 
 class EntitiesPlacementError(ParserException):
     """
-    Raises when an expression contains incorrect placement of operands or operators
+    Raises when an expression contains incorrect\
+        placement of operands or operators
 
     Args:
         expression (str): The expression that is being parsed
-        position (int): Position in the expression where the placement error occurred
+        position (int): Position in the expression\
+            where the placement error occurred
         length (int): Length of the incorrectly placed entity
     """
 
@@ -69,7 +76,8 @@ class InvalidNumberError(ParserException):
 
     Args:
         expression (str): The expression that is being parsed
-        position (int): Position in the expression where the invalid number was found
+        position (int): Position in the expression\
+            where the invalid number was found
         length (int): Length of the invalid number
     """
 
@@ -102,7 +110,8 @@ class Parser:
         Property that contains given expression in reverse polish notation
 
         Returns:
-            list: A list of expression tokens written in reverse polish notation
+            list: A list of expression tokens written\
+                in reverse polish notation
         """
         if self._rpn is None:
             self._rpn = self._parse_to_rpn()
@@ -119,9 +128,12 @@ class Parser:
         def add_binary_op(operator: str) -> None:
             nonlocal stack, result, peek
             while stack and peek in OPERATORS and \
-                (OPERATORS.get(peek).priority > OPERATORS.get(operator).priority or
-                 (OPERATORS.get(peek).associativity != Associativity.RIGHT_ASSOCIATIVE and
-                  OPERATORS.get(peek).priority == OPERATORS.get(operator).priority)):
+                (OPERATORS.get(peek).priority >
+                 OPERATORS.get(operator).priority or
+                 (OPERATORS.get(peek).associativity !=
+                  Associativity.RIGHT_ASSOCIATIVE and
+                  OPERATORS.get(peek).priority ==
+                  OPERATORS.get(operator).priority)):
                 result.append(stack.pop())
                 peek = self._peek(stack)
             stack.append(operator)
@@ -130,7 +142,8 @@ class Parser:
             nonlocal prev_token
             prev_op_type = getattr(OPERATORS.get(
                 prev_token), 'operator_type', None)
-            if (prev_token is not None and prev_token not in OPERATORS and prev_token != '(') or \
+            if (prev_token is not None and
+                prev_token not in OPERATORS and prev_token != '(') or \
                     prev_op_type == OperatorType.POSTFIX:
                 add_binary_op('*')
 
@@ -142,7 +155,8 @@ class Parser:
                                      prev_token == '(' or
                                      prev_token in OPERATORS):
                     token = 'unary-'
-                if OPERATORS.get(token).operator_type == OperatorType.POSTFIX:  # pragma: no cover
+                if OPERATORS.get(token).operator_type == \
+                        OperatorType.POSTFIX:  # pragma: no cover
                     self._entity_placement_error_checker(prev_token, position,
                                                          len(token), False)
                     result.append(token)
@@ -223,7 +237,8 @@ class Parser:
                 add_num_to_tokens()
                 temp += char
                 for symbol in OPERATORS | CONSTANTS:
-                    if char == 'e' and self.expression[index:index + 3] == 'exp':
+                    if char == 'e' and \
+                            self.expression[index:index + 3] == 'exp':
                         break
                     if temp.endswith(symbol):
                         result += list(temp[:-len(symbol)])
@@ -244,15 +259,16 @@ class Parser:
     def _entity_placement_error_checker(self, token, position: int,
                                         length: int, last: bool) -> None:
         if ((token in OPERATORS and OPERATORS[token].operator_type
-                in (OperatorType.BINARY, OperatorType.PREFIX)) or token == '(' or
-                token is None) and not last:
+                in (OperatorType.BINARY, OperatorType.PREFIX))
+                or token == '(' or token is None) and not last:
             raise EntitiesPlacementError(self.expression, position, length)
         if (token in OPERATORS and OPERATORS[token].operator_type
                 in (OperatorType.BINARY, OperatorType.PREFIX)) and last:
             raise EntitiesPlacementError(self.expression, position, length)
 
     def _parenthesis_mismatch_error_checker(self, token, position: int,
-                                            open_bracket_pos: list, last: bool) -> None:
+                                            open_bracket_pos: list,
+                                            last: bool) -> None:
         if not last and token != '(':
             raise ParenthesisMismatchError(self.expression, position)
         if last and token == '(':
