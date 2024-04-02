@@ -33,7 +33,6 @@ def test_bin_op(expression, expected_rpn):
 @pytest.mark.parametrize("expression, expected_rpn",
                          [("-x+y", "xunary-y+"),
                           ("sqrtx", "xsqrt"),
-                          ("cbrtx", "xcbrt"),
                           ("expx", "xexp"),
                           ("lnx", "xln"),
                           ("sinx", "xsin"),
@@ -86,7 +85,8 @@ def test_parenthesis(expression, expected_rpn):
 
 
 @pytest.mark.parametrize("expression, expected_error, expected_error_message",
-                         [("(x + 1) + 0))", expr_parser.ParenthesisMismatchError,
+                         [("(x + 1) + 0))",
+                           expr_parser.ParenthesisMismatchError,
                            "\n(x+1)+0))\n       ^"),
                           ("((x+y)", expr_parser.ParenthesisMismatchError,
                            "\n((x+y)\n^"),

@@ -25,8 +25,8 @@ class ParserException(Exception):
         self.length = length
 
     def __str__(self):
-        return f"\n{self.expression}\n{'^' * self.length: \
-            >{self.position + self.length}}"
+        error_pointer = f"{'^' * self.length:>{self.position + self.length}}"
+        return f"\n{self.expression}\n{error_pointer}"
 
 
 class ParenthesisMismatchError(ParserException):

@@ -18,7 +18,8 @@ def test_empty_and_undefined(func, expected_str):
                           ("(a+b)/c", "(a+b)/c"),
                           ("sin(x-1/y)", "sin(x-1.0/y)"),
                           ("e^(lnx/lnpi)", "e^(ln(x)/ln(pi))"),
-                          ("tg(-cos(e^exp(2/2)))", "tg(-(cos(e^exp(2.0/2.0))))"),
+                          ("tg(-cos(e^exp(2/2)))",
+                           "tg(-(cos(e^exp(2.0/2.0))))"),
                           ("0/0", "undefined")])
 def test_build_func(func, expected_str):
     """Test for building functions"""
@@ -54,7 +55,8 @@ def test_calculate(func, expected_str, point):
                           ("cosx+yx", 'x', {'x': 0, 'y': 2}, "2.0"),
                           ("e^sinx", 'x', {'x': 0}, "1.0"),
                           ("lnx", 'x', {'x': 5}, "0.2"),
-                          ("2x+y^3-sin(tg(z))", 'w', {'x': 10, 'y': 20, 'z': 30}, "0.0")])
+                          ("2x+y^3-sin(tg(z))", 'w',
+                           {'x': 10, 'y': 20, 'z': 30}, "0.0")])
 def test_derive(func, variable, point, expected_str):
     """Test for differentiating functions at some point"""
     assert str(function.Function(func).derive(
