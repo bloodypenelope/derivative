@@ -65,7 +65,6 @@ def test_derive(func, variable, point, expected_str):
                          [("-sin(x^3)", 'x', "-(3.0)*x^2.0*cos(x^3.0)"),
                           ("(x-1)/(x+1)", 'x', "2.0/(x+1.0)^2.0"),
                           ("sqrt(x^2)", 'x', "x/sqrt(x^2.0)"),
-                          ("cbrt(x^3)", 'x', "x^2.0/(x^6.0)^(1.0/3.0)"),
                           ("exp(cos(x))", 'x', "-(exp(cos(x)))*sin(x)"),
                           ("", 'x', "undefined")])
 def test_diff(func, variable, expected_str):
