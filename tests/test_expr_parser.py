@@ -112,4 +112,4 @@ def test_errors(expression, expected_error, expected_error_message):
     """Test for errors in expressions"""
     with pytest.raises(expected_error) as excinfo:
         _ = expr_parser.Parser(expression).rpn
-        assert str(excinfo.value) == expected_error_message
+    assert str(excinfo.value) == expected_error_message
