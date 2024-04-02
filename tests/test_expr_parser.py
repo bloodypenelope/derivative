@@ -3,114 +3,112 @@ import pytest
 from functions import expr_parser
 
 
-def test_empty():
+@pytest.mark.parametrize("expression, expected_rpn",
+                         [("", "")])
+def test_empty(expression, expected_rpn):
     """Test for empty expressions"""
-    assert "".join(expr_parser.Parser("").rpn) == ""
+    assert "".join(expr_parser.Parser(expression).rpn) == expected_rpn
 
 
-def test_strip_whitespaces():
+@pytest.mark.parametrize("expression, expected_rpn",
+                         [("x +                 y", "xy+"),
+                          ("x\t\t\t\t\n/\t\t\n\ny\n", "xy/")])
+def test_strip_whitespaces(expression, expected_rpn):
     """Test for whitespaces in expressions"""
-    assert "".join(expr_parser.Parser("x +                 y").rpn) == "xy+"
-    assert "".join(expr_parser.Parser("x\t\t\t\t\n/\t\t\n\ny\n").rpn) == "xy/"
+    assert "".join(expr_parser.Parser(expression).rpn) == expected_rpn
 
 
-def test_bin_op():
+@pytest.mark.parametrize("expression, expected_rpn",
+                         [("x + y", "xy+"),
+                          ("xy", "xy*"),
+                          ("x-y", "xy-"),
+                          ("x/y", "xy/"),
+                          ("x^y", "xy^"),
+                          ("x+y+z", "xy+z+")])
+def test_bin_op(expression, expected_rpn):
     """Test for binary operators in expressions"""
-    assert "".join(expr_parser.Parser("x + y").rpn) == "xy+"
-    assert "".join(expr_parser.Parser("xy").rpn) == "xy*"
-    assert "".join(expr_parser.Parser("x-y").rpn) == "xy-"
-    assert "".join(expr_parser.Parser("x/y").rpn) == "xy/"
-    assert "".join(expr_parser.Parser("x^y").rpn) == "xy^"
-    assert "".join(expr_parser.Parser("x+y+z").rpn) == "xy+z+"
+    assert "".join(expr_parser.Parser(expression).rpn) == expected_rpn
 
 
-def test_prefix_op():
+@pytest.mark.parametrize("expression, expected_rpn",
+                         [("-x+y", "xunary-y+"),
+                          ("sqrtx", "xsqrt"),
+                          ("expx", "xexp"),
+                          ("lnx", "xln"),
+                          ("sinx", "xsin"),
+                          ("cosx", "xcos"),
+                          ("tgx", "xtg")])
+def test_prefix_op(expression, expected_rpn):
     """Test for prefix operators in expressions"""
-    assert "".join(expr_parser.Parser("-x+y").rpn) == "xunary-y+"
-    assert "".join(expr_parser.Parser("sqrtx").rpn) == "xsqrt"
-    assert "".join(expr_parser.Parser("expx").rpn) == "xexp"
-    assert "".join(expr_parser.Parser("lnx").rpn) == "xln"
-    assert "".join(expr_parser.Parser("sinx").rpn) == "xsin"
-    assert "".join(expr_parser.Parser("cosx").rpn) == "xcos"
-    assert "".join(expr_parser.Parser("tgx").rpn) == "xtg"
+    assert "".join(expr_parser.Parser(expression).rpn) == expected_rpn
 
 
-def test_postfix_op():  # pragma: no cover
+@pytest.mark.parametrize("expression, expected_rpn", [])  # pragma: no cover
+def test_postfix_op(expression, expected_rpn):
+    # pylint: disable=unused-argument
     """Test for postfix operators in expressions"""
 
 
-def test_complex_expr():
+@pytest.mark.parametrize("expression, expected_rpn",
+                         [("x/(y+z)", "xyz+/"),
+                          ("sin(x^2-2lnx)", "x2^2xln*-sin"),
+                          ("exp(lnx)", "xlnexp"),
+                          ("sqrt(x^2/sinx)", "x2^xsin/sqrt"),
+                          ("x^2-3/x+20sinx", "x2^3x/-20xsin*+"),
+                          ("x^x^x", "xxx^^")])
+def test_complex_expr(expression, expected_rpn):
     """Test for complex expressions"""
-    assert "".join(expr_parser.Parser("x/(y+z)").rpn) == "xyz+/"
-    assert "".join(expr_parser.Parser("sin(x^2-2lnx)").rpn) == "x2^2xln*-sin"
-    assert "".join(expr_parser.Parser("exp(lnx)").rpn) == "xlnexp"
-    assert "".join(expr_parser.Parser("sqrt(x^2/sinx)").rpn) == "x2^xsin/sqrt"
-    assert "".join(expr_parser.Parser("x^2-3/x+20sinx").rpn) \
-        == "x2^3x/-20xsin*+"
-    assert "".join(expr_parser.Parser("x^x^x").rpn) == "xxx^^"
+    assert "".join(expr_parser.Parser(expression).rpn) == expected_rpn
 
 
-def test_skipped_muls():
+@pytest.mark.parametrize("expression, expected_rpn",
+                         [("xyz", "xy*z*"),
+                          ("(a+b)(c+d)", "ab+cd+*"),
+                          ("(a+b)sinx", "ab+xsin*"),
+                          ("2,3x", "2.3x*"),
+                          ("lnxexpx", "xlnxexp*"),
+                          ("(a(b(c+d)))", "abcd+**")])
+def test_skipped_muls(expression, expected_rpn):
     """Test for skipped multiplications in expressions"""
-    assert "".join(expr_parser.Parser("xyz").rpn) == "xy*z*"
-    assert "".join(expr_parser.Parser("(a+b)(c+d)").rpn) == "ab+cd+*"
-    assert "".join(expr_parser.Parser("(a+b)sinx").rpn) == "ab+xsin*"
-    assert "".join(expr_parser.Parser("2,3x").rpn) == "2.3x*"
-    assert "".join(expr_parser.Parser("lnxexpx").rpn) == "xlnxexp*"
-    assert "".join(expr_parser.Parser("(a(b(c+d)))").rpn) == "abcd+**"
+    assert "".join(expr_parser.Parser(expression).rpn) == expected_rpn
 
 
-def test_parenthesis():
+@pytest.mark.parametrize("expression, expected_rpn",
+                         [("(x+y)z", "xy+z*"),
+                          ("(x-y+z)sinx", "xy-z+xsin*"),
+                          ("ab/(-c)", "ab*cunary-/"),
+                          ("(a^b)^c", "ab^c^"),
+                          ("a/(b/c)", "abc//")])
+def test_parenthesis(expression, expected_rpn):
     """Test for parenthesis in expressions"""
-    assert "".join(expr_parser.Parser("(x+y)z").rpn) == "xy+z*"
-    assert "".join(expr_parser.Parser("(x-y+z)sinx").rpn) == "xy-z+xsin*"
-    assert "".join(expr_parser.Parser("ab/(-c)").rpn) == "ab*cunary-/"
-    assert "".join(expr_parser.Parser("(a^b)^c").rpn) == "ab^c^"
-    assert "".join(expr_parser.Parser("a/(b/c)").rpn) == "abc//"
+    assert "".join(expr_parser.Parser(expression).rpn) == expected_rpn
 
 
-def test_errors():
+@pytest.mark.parametrize("expression, expected_error, expected_error_message",
+                         [("(x + 1) + 0))", expr_parser.ParenthesisMismatchError,
+                           "\n(x+1)+0))\n       ^"),
+                          ("((x+y)", expr_parser.ParenthesisMismatchError,
+                           "\n((x+y)\n^"),
+                          ("(x + 1) + x!", expr_parser.InvalidCharacterError,
+                           "\n(x+1)+x!\n       ^"),
+                          ("abй", expr_parser.InvalidCharacterError,
+                           "\nabй\n  ^"),
+                          ("(a+b())", expr_parser.EntitiesPlacementError,
+                           "\n(a+b())\n     ^"),
+                          ("1+x++3", expr_parser.EntitiesPlacementError,
+                           "\n1+x++3\n    ^"),
+                          ("2sin", expr_parser.EntitiesPlacementError,
+                           "\n2sin\n ^^^"),
+                          ("+2sinx", expr_parser.EntitiesPlacementError,
+                           "\n+2sinx\n^"),
+                          ("2sinx+", expr_parser.EntitiesPlacementError,
+                           "\n2sinx+\n     ^"),
+                          ("2+.", expr_parser.InvalidNumberError,
+                           "\n2+.\n  ^"),
+                          ("1.341.2x", expr_parser.InvalidNumberError,
+                           "\n1.341.2x\n^^^^^^^")])
+def test_errors(expression, expected_error, expected_error_message):
     """Test for errors in expressions"""
-    with pytest.raises(expr_parser.ParenthesisMismatchError) as excinfo:
-        _ = expr_parser.Parser("(x + 1) + 0))").rpn
-        assert str(excinfo.value) == "\n(x+1)+0))\n       ^"
-
-    with pytest.raises(expr_parser.ParenthesisMismatchError) as excinfo:
-        _ = expr_parser.Parser("((x+y)").rpn
-        assert str(excinfo.value) == "\n((x+y)\n^"
-
-    with pytest.raises(expr_parser.InvalidCharacterError) as excinfo:
-        _ = expr_parser.Parser("(x + 1) + x!").rpn
-        assert str(excinfo.value) == "\n(x+1)+x!\n       ^"
-
-    with pytest.raises(expr_parser.InvalidCharacterError) as excinfo:
-        _ = expr_parser.Parser("abй").rpn
-        assert str(excinfo.value) == "\nabй\n  ^"
-
-    with pytest.raises(expr_parser.EntitiesPlacementError) as excinfo:
-        _ = expr_parser.Parser("(a+b())").rpn
-        assert str(excinfo.value) == "\n(a+b())\n     ^"
-
-    with pytest.raises(expr_parser.EntitiesPlacementError) as excinfo:
-        _ = expr_parser.Parser("1+x++3").rpn
-        assert str(excinfo.value) == "\n1+x++3\n    ^"
-
-    with pytest.raises(expr_parser.EntitiesPlacementError) as excinfo:
-        _ = expr_parser.Parser("2sin").rpn
-        assert str(excinfo.value) == "\n2sin\n ^^^"
-
-    with pytest.raises(expr_parser.EntitiesPlacementError) as excinfo:
-        _ = expr_parser.Parser("+2sinx").rpn
-        assert str(excinfo.value) == "\n+2sinx\n^"
-
-    with pytest.raises(expr_parser.EntitiesPlacementError) as excinfo:
-        _ = expr_parser.Parser("2sinx+").rpn
-        assert str(excinfo.value) == "\n2sinx+\n     ^"
-
-    with pytest.raises(expr_parser.InvalidNumberError) as excinfo:
-        _ = expr_parser.Parser("2+.").rpn
-        assert str(excinfo.value) == "\n2+.\n  ^"
-
-    with pytest.raises(expr_parser.InvalidNumberError) as excinfo:
-        _ = expr_parser.Parser("1.341.2x").rpn
-        assert str(excinfo.value) == "\n1.341.2x\n^^^^^^^"
+    with pytest.raises(expected_error) as excinfo:
+        _ = expr_parser.Parser(expression).rpn
+        assert str(excinfo.value) == expected_error_message
